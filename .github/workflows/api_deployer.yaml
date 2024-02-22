@@ -11,7 +11,7 @@ jobs:
       LambdaName: ReservationApiLambdaFunction
     strategy:
       matrix:
-        dotnet: [ '6.0.x' ]
+        dotnet: [ '8.0.x' ]
     
     name:  API Deployer PROD - BUILD
 
