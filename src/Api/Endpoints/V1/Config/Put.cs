@@ -29,8 +29,8 @@ public class Put : IEndpoint
         entity.WorkingHours = request.WorkingHours.Select(q=> new ItemConfigWorkingHourModel()
         {
             DayOfWeek = q.DayOfWeek,
-            Open = TimeSpan.Parse(q.Open),
-            Close = TimeSpan.Parse(q.Close)
+            Open = q.Open.ToTimeSpan(),
+            Close = q.Close.ToTimeSpan()
         }).ToList();
         entity.SlotCountAtSameTime = request.SlotCountAtSameTime;
         entity.DurationMinutes = request.DurationMinutes;

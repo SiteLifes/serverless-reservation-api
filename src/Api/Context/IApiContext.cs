@@ -15,7 +15,7 @@ namespace Api.Context
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string CurrentUserId => _httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-user-id", out var userId) ? userId.ToString() : throw new Exception("User id not found");
-        public string Culture => _httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-culture", out var culture) ? culture.ToString() : "en-US";
+        public string CurrentUserId => _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue("x-user-id", out var userId) ? userId.ToString() : throw new Exception("User id not found");
+        public string Culture => _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue("x-culture", out var culture) ? culture.ToString() : "en-US";
     }
 }

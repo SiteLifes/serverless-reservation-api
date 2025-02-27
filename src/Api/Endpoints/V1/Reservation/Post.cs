@@ -16,21 +16,31 @@ public class Post : IEndpoint
         [FromServices] IApiContext apiContext,
         [FromServices] IReservationService reservationService,
         [FromServices] IValidator<ReservationModel> validator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
-        
-        var overlappingReservations = await reservationService.CheckOverlappingReservationsAsync(request.ItemId, request.StartDate, request.EndDate, cancellationToken);
+
+        var startDate = request.Date.ToDateTime(request.StartTime);
+        var endDate = request.Date.ToDateTime(request.EndTime);
+
+        var overlappingReservations =
+            await reservationService.CheckOverlappingReservationsAsync(request.ItemId,
+                startDate,
+                endDate,
+                cancellationToken);
         if (overlappingReservations)
             return Results.Conflict("Overlapping reservations found");
-        
+
+
+
         var reservationDto = new ReservationDto
         {
             ItemId = request.ItemId,
-            StartDate = request.StartDate,
-            EndDate = request.EndDate,
+            StartDate = startDate,
+            EndDate = endDate,
             Description = request.Description,
             UserId = apiContext.CurrentUserId
         };

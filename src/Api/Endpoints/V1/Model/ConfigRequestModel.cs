@@ -4,7 +4,7 @@ namespace Api.Endpoints.V1.Model;
 
 public class ConfigRequestModel
 {
-    public List<ItemConfigWorkingHourRequestModel> WorkingHours { get; set; } = new();
+    public List<ItemConfigWorkingHourDto> WorkingHours { get; set; } = new();
 
     public int SlotCountAtSameTime { get; set; }
 
