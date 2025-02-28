@@ -49,11 +49,11 @@ public class GetAll : IEndpoint
             while (workingHours.Open <= workingHours.Close)
             {
                 var currentDayReservations =
-                    reservations.Where(q => q.StartDate.Date == currentDate);
+                    reservations.Where(q => q.Date == DateOnly.FromDateTime(currentDate));
 
                 var reservationCountInThatSlot = currentDayReservations.Count(q =>
-                    q.StartDate.TimeOfDay <= workingHours.Open
-                    && q.EndDate.TimeOfDay >= workingHours.Open);
+                    q.StartTime <= TimeOnly.FromTimeSpan(workingHours.Open)
+                    && q.EndTime >= TimeOnly.FromTimeSpan(workingHours.Open));
                 slotHours.Add(new SlotDto.SlotHourDto
                 {
                     StartTime = TimeOnly.FromTimeSpan(workingHours.Open),

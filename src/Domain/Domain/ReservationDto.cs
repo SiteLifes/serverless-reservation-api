@@ -7,8 +7,9 @@ public class ReservationDto
     public string Id { get; set; } = default!;
     public string ItemId { get; set; } = default!;
     public string UserId { get; set; } = default!;
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateOnly Date { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
     public string? Description { get; set; }
 }
 
@@ -21,8 +22,9 @@ public static class ReservationDtoMapper
             Id = entity.Id,
             ItemId = entity.ItemId,
             UserId = entity.UserId,
-            StartDate = entity.StartDate,
-            EndDate = entity.EndDate,
+            Date = DateOnly.FromDateTime(entity.StartDate),
+            StartTime = TimeOnly.FromDateTime(entity.StartDate),
+            EndTime = TimeOnly.FromDateTime(entity.EndDate),
             Description = entity.Description
         };
     }

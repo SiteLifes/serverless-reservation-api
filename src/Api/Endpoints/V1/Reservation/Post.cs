@@ -34,13 +34,12 @@ public class Post : IEndpoint
         if (overlappingReservations)
             return Results.Conflict("Overlapping reservations found");
 
-
-
         var reservationDto = new ReservationDto
         {
             ItemId = request.ItemId,
-            StartDate = startDate,
-            EndDate = endDate,
+            Date = request.Date,
+            StartTime = request.StartTime,
+            EndTime = request.EndTime,
             Description = request.Description,
             UserId = apiContext.CurrentUserId
         };
