@@ -40,6 +40,11 @@ public class ReservationRepository : DynamoRepository, IReservationRepository
         return BatchGetAsync(reservationIds.Select(q => new ReservationEntity { Id = q }).ToList(),
             cancellationToken);
     }
+    
+    public Task<List<ReservationEntity>> GetReservationsAsync(CancellationToken cancellationToken)
+    {
+        return GetAllAsync<ReservationEntity>(pk: ReservationEntity.GetPk(), cancellationToken);
+    }
 
     public async Task<bool> DeleteAsync(List<IEntity> updatedEntities, List<IEntity> entities,
         CancellationToken cancellationToken)

@@ -23,36 +23,32 @@ public class ReservationService : IReservationService
         if (reservation == null)
             return false;
 
-        entities.Add(new ReservationEntity
-        {
-            Id = id
-        });
+        entities.Add(new ReservationEntity { Id = id });
 
-        entities.Add(new ItemReservationMappingEntity
-        {
-            ItemId = reservation.ItemId,
-            ReservationId = id,
-        });
+        entities.Add(
+            new ItemReservationMappingEntity { ItemId = reservation.ItemId, ReservationId = id }
+        );
 
-        entities.Add(new UserReservationMappingEntity()
-        {
-            UserId = reservation.UserId,
-            ReservationId = id,
-        });
+        entities.Add(
+            new UserReservationMappingEntity() { UserId = reservation.UserId, ReservationId = id }
+        );
 
         var dailyReservationEntity = await _reservationRepository.GetDailyReservationAsync(
             reservation.ItemId,
             reservation.StartDate,
-            cancellationToken);
+            cancellationToken
+        );
 
         if (dailyReservationEntity != null)
         {
             dailyReservationEntity.Items.Remove(id);
         }
 
-        await _reservationRepository.DeleteAsync(new List<IEntity> { dailyReservationEntity },
+        await _reservationRepository.DeleteAsync(
+            new List<IEntity> { dailyReservationEntity },
             entities,
-            cancellationToken);
+            cancellationToken
+        );
         return true;
     }
 
@@ -88,36 +84,43 @@ public class ReservationService : IReservationService
         var endDate = reservationDto.Date.ToDateTime(reservationDto.EndTime);
 
         var entities = new List<IEntity>();
-        entities.Add(new ReservationEntity
-        {
-            Id = reservationId,
-            ItemId = reservationDto.ItemId,
-            UserId = reservationDto.UserId,
-            StartDate = startDate,
-            EndDate = endDate,
-            Description = reservationDto.Description,
-        });
+        entities.Add(
+            new ReservationEntity
+            {
+                Id = reservationId,
+                ItemId = reservationDto.ItemId,
+                UserId = reservationDto.UserId,
+                StartDate = startDate,
+                EndDate = endDate,
+                Description = reservationDto.Description,
+            }
+        );
 
-        entities.Add(new UserReservationMappingEntity
-        {
-            ItemId = reservationDto.ItemId,
-            ReservationId = reservationId,
-            UserId = reservationDto.UserId,
-            Date = startDate
-        });
+        entities.Add(
+            new UserReservationMappingEntity
+            {
+                ItemId = reservationDto.ItemId,
+                ReservationId = reservationId,
+                UserId = reservationDto.UserId,
+                Date = startDate,
+            }
+        );
 
-        entities.Add(new ItemReservationMappingEntity
-        {
-            ItemId = reservationDto.ItemId,
-            ReservationId = reservationId,
-            UserId = reservationDto.UserId,
-            Date = startDate
-        });
+        entities.Add(
+            new ItemReservationMappingEntity
+            {
+                ItemId = reservationDto.ItemId,
+                ReservationId = reservationId,
+                UserId = reservationDto.UserId,
+                Date = startDate,
+            }
+        );
 
         var dailyReservationEntity = await _reservationRepository.GetDailyReservationAsync(
             reservationDto.ItemId,
             startDate,
-            cancellationToken);
+            cancellationToken
+        );
 
         if (dailyReservationEntity == null)
         {
@@ -125,7 +128,7 @@ public class ReservationService : IReservationService
             {
                 Date = reservationDto.Date.ToDateTime(reservationDto.StartTime),
                 ItemId = reservationDto.ItemId,
-                Items = new List<string>()
+                Items = new List<string>(),
             };
         }
 
@@ -139,9 +142,10 @@ public class ReservationService : IReservationService
         CancellationToken cancellationToken
     )
     {
-        var reservation =
-            await _reservationRepository.GetReservationsAsync(new List<string> { id },
-                cancellationToken);
+        var reservation = await _reservationRepository.GetReservationsAsync(
+            new List<string> { id },
+            cancellationToken
+        );
         return reservation.FirstOrDefault()?.ToDto();
     }
 
@@ -150,16 +154,18 @@ public class ReservationService : IReservationService
         CancellationToken cancellationToken
     )
     {
-        var reservations =
-            await _reservationRepository.GetItemReservationsAsync(itemId, cancellationToken);
+        var reservations = await _reservationRepository.GetItemReservationsAsync(
+            itemId,
+            cancellationToken
+        );
         var entities = new List<ReservationEntity>();
         while (reservations.Any())
         {
             var top100 = reservations.Take(100).ToList();
-            var reservationItems =
-                await _reservationRepository.GetReservationsAsync(
-                    top100.Select(q => q.ReservationId).ToList(),
-                    cancellationToken);
+            var reservationItems = await _reservationRepository.GetReservationsAsync(
+                top100.Select(q => q.ReservationId).ToList(),
+                cancellationToken
+            );
             entities.AddRange(reservationItems);
             reservations = reservations.Skip(100).ToList();
         }
@@ -171,16 +177,18 @@ public class ReservationService : IReservationService
         CancellationToken cancellationToken
     )
     {
-        var reservations =
-            await _reservationRepository.GetUserReservationsAsync(userId, cancellationToken);
+        var reservations = await _reservationRepository.GetUserReservationsAsync(
+            userId,
+            cancellationToken
+        );
         var entities = new List<ReservationEntity>();
         while (reservations.Any())
         {
             var top100 = reservations.Take(100).ToList();
-            var reservationItems =
-                await _reservationRepository.GetReservationsAsync(
-                    top100.Select(q => q.ReservationId).ToList(),
-                    cancellationToken);
+            var reservationItems = await _reservationRepository.GetReservationsAsync(
+                top100.Select(q => q.ReservationId).ToList(),
+                cancellationToken
+            );
             entities.AddRange(reservationItems);
             reservations = reservations.Skip(100).ToList();
         }
@@ -197,23 +205,37 @@ public class ReservationService : IReservationService
         var dailyReservationRequests = new List<DailyReservationEntity>();
         while (startDate <= endDate)
         {
-            dailyReservationRequests.Add(new DailyReservationEntity
-            {
-                ItemId = itemId,
-                Date = startDate
-            });
+            dailyReservationRequests.Add(
+                new DailyReservationEntity { ItemId = itemId, Date = startDate }
+            );
             startDate = startDate.AddDays(1);
         }
 
         if (!dailyReservationRequests.Any())
             return new List<ReservationDto>();
 
-        var dailyReservations =
-            await _reservationRepository.GetDailyReservationsAsync(dailyReservationRequests,
-                cancellationToken);
+        var dailyReservations = await _reservationRepository.GetDailyReservationsAsync(
+            dailyReservationRequests,
+            cancellationToken
+        );
         var reservationIds = dailyReservations.SelectMany(x => x.Items).ToList();
-        var reservations =
-            await _reservationRepository.GetReservationsAsync(reservationIds, cancellationToken);
+        var reservations = await _reservationRepository.GetReservationsAsync(
+            reservationIds,
+            cancellationToken
+        );
+        return reservations.Select(q => q.ToDto()).ToList();
+    }
+
+    public async Task<List<ReservationDto>> GetAllReservationsAsync(
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken
+    )
+    {
+        var allReservations = await _reservationRepository.GetReservationsAsync(cancellationToken);
+        var reservations = allReservations
+            .Where(q => q.StartDate >= startDate && q.EndDate <= endDate)
+            .ToList();
         return reservations.Select(q => q.ToDto()).ToList();
     }
 }

@@ -21,4 +21,5 @@ public interface IReservationService
 
     Task<List<ReservationDto>> GetReservationsByUserIdAsync(string userId, CancellationToken cancellationToken);
     Task<List<ReservationDto>> GetReservationsAsync(string itemId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+    Task<List<ReservationDto>> GetAllReservationsAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }
