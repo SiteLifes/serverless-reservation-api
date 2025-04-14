@@ -65,6 +65,11 @@ public class GetAll : IEndpoint
                 });
                 workingHours.Open =
                     workingHours.Open.Add(TimeSpan.FromMinutes(config.DurationMinutes));
+
+                if (config.DurationMinutes == 0)
+                {
+                    break;
+                }
             }
 
             slots.Add(new SlotDto
