@@ -12,8 +12,10 @@ public class ReservationRepository : DynamoRepository, IReservationRepository
     {
     }
 
-    protected override string GetTableName() => "reservations";
-
+    protected override string GetTableName()
+    {
+        return GetEnvironmentTableName("reservations");
+    }
 
     public async Task<bool> SaveAsync(List<IEntity> entities, CancellationToken cancellationToken)
     {

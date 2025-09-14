@@ -10,8 +10,10 @@ public class ConfigRepository : DynamoRepository, IConfigRepository
     public ConfigRepository(IAmazonDynamoDB dynamoDb) : base(dynamoDb)
     {
     }
-
-    protected override string GetTableName() => "reservations";
+    protected override string GetTableName()
+    {
+        return GetEnvironmentTableName("reservations");
+    }
 
     public Task<ItemConfigEntity?> GetAsync(string itemId, CancellationToken cancellationToken = default)
     {
